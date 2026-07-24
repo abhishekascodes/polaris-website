@@ -22,32 +22,25 @@
         window.scrollTo(0, 0);
     });
 
-    // 1. SMOOTH SCROLL ANCHOR HANDLER (ROBUST CLICK INTERCEPTOR - ZERO NEW PAGES, ZERO TELEPORTING)
+    // 1. PURE DATA-SCROLL SMOOTH ANIMATION ENGINE (NO HASH IN URL, ZERO TELEPORTING)
     document.addEventListener('click', (e) => {
-        const anchor = e.target.closest('a');
-        if (!anchor) return;
+        const trigger = e.target.closest('[data-scroll]');
+        if (!trigger) return;
         
-        const href = anchor.getAttribute('href');
-        if (!href) return;
+        e.preventDefault();
+        const targetId = trigger.getAttribute('data-scroll');
 
-        // If logo or top link, smooth scroll to top
-        if (href === '#' || href === 'index.html' || anchor.classList.contains('hero-brand')) {
-            e.preventDefault();
+        if (targetId === 'hero' || targetId === 'top') {
             window.scrollTo({ top: 0, behavior: 'smooth' });
             return;
         }
 
-        // If section anchor link (#visual-math, #pipeline-flow, #benchmarks, #methodology)
-        if (href.startsWith('#')) {
-            const target = document.querySelector(href);
-            if (target) {
-                e.preventDefault();
-                const targetY = target.getBoundingClientRect().top + window.pageYOffset - 10;
-                window.scrollTo({
-                    top: targetY,
-                    behavior: 'smooth'
-                });
-            }
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) {
+            targetEl.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
         }
     });
 
