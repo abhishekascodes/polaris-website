@@ -4,6 +4,39 @@
 (function() {
     'use strict';
 
+    // 0. RESET SCROLL POSITION TO TOP ON REFRESH (PREVENT TRAPPED PAGE RELOAD AT BOTTOM)
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+
+    window.addEventListener('beforeunload', () => {
+        window.scrollTo(0, 0);
+    });
+
+    if (window.location.hash) {
+        history.replaceState(null, '', window.location.pathname);
+    }
+    window.scrollTo(0, 0);
+
+    // 1. ELEGANT SMOOTH SCROLL ANCHOR HANDLER (PREVENT INSTANT TELEPORTING)
+    document.addEventListener('click', (e) => {
+        const anchor = e.target.closest('a[href^="#"]');
+        if (!anchor) return;
+        
+        const href = anchor.getAttribute('href');
+        if (!href || href === '#') return;
+        
+        const target = document.querySelector(href);
+        if (target) {
+            e.preventDefault();
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+            history.pushState(null, '', href);
+        }
+    });
+
     // HERO NEURAL VECTOR RADAR HUD CANVAS ANIMATION (SLOW & SMOOTH)
     function initHeroRadarCanvas() {
         const canvas = document.getElementById('hero-radar-canvas');
@@ -43,7 +76,7 @@
 
             ctx.clearRect(0, 0, width, height);
 
-            // 1. Grid Background & Concentric Rings
+            // Grid Background & Concentric Rings
             ctx.strokeStyle = 'rgba(212, 232, 151, 0.12)';
             ctx.lineWidth = 1;
 
@@ -62,7 +95,7 @@
             ctx.lineTo(width - 15, cy);
             ctx.stroke();
 
-            // 2. Safety Invariant Boundary Frame (+-5.0)
+            // Safety Invariant Boundary Frame (+-5.0)
             ctx.strokeStyle = '#d4e897';
             ctx.lineWidth = 2;
             ctx.setLineDash([6, 4]);
@@ -77,7 +110,7 @@
             ctx.fillText('+5.0', cx - 12, cy - 110);
             ctx.fillText('-5.0', cx - 12, cy + 118);
 
-            // 3. Sweeping Radar Beam (SLOW RADAR ROTATION)
+            // Sweeping Radar Beam (SLOW RADAR ROTATION)
             angle += 0.005;
             ctx.save();
             ctx.beginPath();
@@ -100,7 +133,7 @@
             ctx.lineTo(cx + 145 * Math.cos(angle + 0.4), cy + 145 * Math.sin(angle + 0.4));
             ctx.stroke();
 
-            // 4. Draw Dynamic Agent Nodes
+            // Draw Dynamic Agent Nodes
             nodes.forEach(n => {
                 n.theta += n.speed;
                 const nx = cx + n.r * Math.cos(n.theta);
@@ -247,7 +280,7 @@
             return;
         }
 
-        // 1. SECTION & STAGGER REVEAL OBSERVER
+        // SECTION & STAGGER REVEAL OBSERVER
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -261,7 +294,7 @@
             revealObserver.observe(el);
         });
 
-        // 2. EMPIRICAL STATS COUNTER ANIMATION (RUNS ONCE OVER ~0.8s)
+        // EMPIRICAL STATS COUNTER ANIMATION (RUNS ONCE OVER ~0.8s)
         const statsContainer = document.querySelector('.stats-container');
         if (statsContainer) {
             const statsObserver = new IntersectionObserver((entries) => {
@@ -308,7 +341,7 @@
             requestAnimationFrame(step);
         }
 
-        // 3. BENCHMARK BAR FILL WIDTH ANIMATION
+        // BENCHMARK BAR FILL WIDTH ANIMATION
         const benchContainer = document.querySelector('.bench-visual-container');
         if (benchContainer) {
             const benchObserver = new IntersectionObserver((entries) => {
