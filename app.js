@@ -22,25 +22,59 @@
         window.scrollTo(0, 0);
     });
 
-    // 1. PURE DATA-SCROLL SMOOTH ANIMATION ENGINE (NO HASH IN URL, ZERO TELEPORTING)
-    document.addEventListener('click', (e) => {
-        const trigger = e.target.closest('[data-scroll]');
-        if (!trigger) return;
-        
-        e.preventDefault();
-        const targetId = trigger.getAttribute('data-scroll');
+    // CUSTOM SMOOTH ANIMATION SCROLL ENGINE (FRAME-BY-FRAME 600MS EASY SLIDE)
+    function animateScrollTo(targetY) {
+        const startY = window.pageYOffset;
+        const distance = targetY - startY;
+        const duration = 650; // 650ms smooth slide
+        let start = null;
 
-        if (targetId === 'hero' || targetId === 'top') {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        function step(timestamp) {
+            if (!start) start = timestamp;
+            const elapsed = timestamp - start;
+            const progress = Math.min(elapsed / duration, 1);
+
+            // Easing: easeOutCubic
+            const ease = 1 - Math.pow(1 - progress, 3);
+
+            window.scrollTo(0, startY + distance * ease);
+
+            if (progress < 1) {
+                requestAnimationFrame(step);
+            } else {
+                // Ensure hash is cleaned from URL after smooth scroll finishes
+                if (window.location.hash) {
+                    history.replaceState(null, '', window.location.pathname + window.location.search);
+                }
+            }
+        }
+
+        requestAnimationFrame(step);
+    }
+
+    // 1. ANCHOR & LINK CLICK INTERCEPTOR
+    document.addEventListener('click', (e) => {
+        const anchor = e.target.closest('a');
+        if (!anchor) return;
+
+        const href = anchor.getAttribute('href');
+        if (!href) return;
+
+        // Top / Logo links
+        if (href === '#' || href === '#hero' || href === 'index.html' || anchor.classList.contains('hero-brand')) {
+            e.preventDefault();
+            animateScrollTo(0);
             return;
         }
 
-        const targetEl = document.getElementById(targetId);
-        if (targetEl) {
-            targetEl.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
+        // Section anchor links (#visual-math, #pipeline-flow, #benchmarks, #methodology)
+        if (href.startsWith('#')) {
+            const target = document.querySelector(href);
+            if (target) {
+                e.preventDefault();
+                const targetY = target.getBoundingClientRect().top + window.pageYOffset - 10;
+                animateScrollTo(targetY);
+            }
         }
     });
 

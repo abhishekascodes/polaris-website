@@ -37,6 +37,10 @@
     --radius-pill: 9999px;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -714,11 +718,7 @@ body {
     vertical-align: middle;
 }
 
-/* ==========================================================================
-   SELECTIVE SCIENTIFIC SCROLL ANIMATIONS (ANIMATE INFORMATION, NOT DECORATION)
-   ========================================================================== */
-
-/* 1. HERO SECTION ENTRY STAGGER */
+/* SELECTIVE SCIENTIFIC SCROLL ANIMATIONS */
 .reveal-hero-head {
     opacity: 0;
     transform: translateY(20px);
@@ -744,7 +744,6 @@ body {
     }
 }
 
-/* 2. SECTION REVEALS (OPACITY 0->1, Y-OFFSET 20px->0, 450ms, EASE-OUT) */
 .reveal-section {
     opacity: 0;
     transform: translateY(20px);
@@ -757,7 +756,6 @@ body {
     transform: translateY(0);
 }
 
-/* 3. RESEARCH CARD STAGGER */
 .reveal-stagger-item {
     opacity: 0;
     transform: translateY(20px);
@@ -772,11 +770,6 @@ body {
     opacity: 1; transform: translateY(0); transition-delay: 80ms;
 }
 
-.reveal-stagger-container.is-visible .reveal-stagger-item:nth-child(3) {
-    opacity: 1; transform: translateY(0); transition-delay: 160ms;
-}
-
-/* 4. PIPELINE FLOW STEP-BY-STEP TOP-TO-BOTTOM ANIMATION */
 .pipeline-item {
     opacity: 0;
     transform: translateY(20px);
@@ -793,12 +786,4 @@ body {
 
 .pipeline-flow-container.is-visible .pipeline-item:nth-child(3) {
     opacity: 1; transform: translateY(0); transition-delay: 160ms;
-}
-
-.pipeline-flow-container.is-visible .pipeline-item:nth-child(4) {
-    opacity: 1; transform: translateY(0); transition-delay: 240ms;
-}
-
-.pipeline-flow-container.is-visible .pipeline-item:nth-child(5) {
-    opacity: 1; transform: translateY(0); transition-delay: 320ms;
 }
