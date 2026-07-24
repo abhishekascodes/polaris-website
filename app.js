@@ -22,22 +22,32 @@
         window.scrollTo(0, 0);
     });
 
-    // 1. SMOOTH SCROLL ANCHOR HANDLER (ZERO TELEPORTING, NO HASH IN URL)
+    // 1. SMOOTH SCROLL ANCHOR HANDLER (ROBUST CLICK INTERCEPTOR - ZERO NEW PAGES, ZERO TELEPORTING)
     document.addEventListener('click', (e) => {
-        const anchor = e.target.closest('a[href^="#"]');
+        const anchor = e.target.closest('a');
         if (!anchor) return;
         
         const href = anchor.getAttribute('href');
-        if (!href || href === '#') return;
-        
-        const target = document.querySelector(href);
-        if (target) {
+        if (!href) return;
+
+        // If logo or top link, smooth scroll to top
+        if (href === '#' || href === 'index.html' || anchor.classList.contains('hero-brand')) {
             e.preventDefault();
-            const targetY = target.getBoundingClientRect().top + window.pageYOffset - 10;
-            window.scrollTo({
-                top: targetY,
-                behavior: 'smooth'
-            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+
+        // If section anchor link (#visual-math, #pipeline-flow, #benchmarks, #methodology)
+        if (href.startsWith('#')) {
+            const target = document.querySelector(href);
+            if (target) {
+                e.preventDefault();
+                const targetY = target.getBoundingClientRect().top + window.pageYOffset - 10;
+                window.scrollTo({
+                    top: targetY,
+                    behavior: 'smooth'
+                });
+            }
         }
     });
 
