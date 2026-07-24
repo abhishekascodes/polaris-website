@@ -1,10 +1,10 @@
-// POLARIS v5 Premium Architectural Engine - Selective Scientific Scroll Animations
-// Strict Philosophy: Animate Information, Not Decoration. Zero Gimmicks.
+// POLARIS v5 Premium Architectural Engine - Scientific Navigation & Scroll System
+// Strict Philosophy: Precise Positioning, Zero Gimmicks.
 
 (function() {
     'use strict';
 
-    // 0. RESET SCROLL RESTORATION & FORCE TOP SCROLL ON LOAD/REFRESH
+    // 0. RESET SCROLL RESTORATION & FORCE TOP SCROLL ON REFRESH
     if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
     }
@@ -22,47 +22,18 @@
         window.scrollTo(0, 0);
     });
 
-    // CUSTOM SMOOTH ANIMATION SCROLL ENGINE (INFINITE REPEATABLE SMOOTH SLIDE)
-    let currentScrollFrame = null;
-
-    function animateScrollTo(targetY) {
-        // Cancel any previously running scroll animation to prevent collision
-        if (currentScrollFrame) {
-            cancelAnimationFrame(currentScrollFrame);
-            currentScrollFrame = null;
-        }
-
-        const startY = window.pageYOffset || document.documentElement.scrollTop;
-        const distance = targetY - startY;
-        if (Math.abs(distance) < 5) return;
-
-        const duration = 500; // Crisp 500ms slide
-        let start = null;
-
-        function step(timestamp) {
-            if (!start) start = timestamp;
-            const elapsed = timestamp - start;
-            const progress = Math.min(elapsed / duration, 1);
-
-            // Easing: easeOutCubic
-            const ease = 1 - Math.pow(1 - progress, 3);
-
-            window.scrollTo(0, startY + distance * ease);
-
-            if (progress < 1) {
-                currentScrollFrame = requestAnimationFrame(step);
-            } else {
-                currentScrollFrame = null;
-                if (window.location.hash) {
-                    history.replaceState(null, '', window.location.pathname + window.location.search);
-                }
-            }
-        }
-
-        currentScrollFrame = requestAnimationFrame(step);
+    // 1. REVEAL ALL SECTIONS ON INITIAL LOAD SO LAYOUT OFFSETS ARE 100% PRECISE
+    function revealAllSections() {
+        document.querySelectorAll('.reveal-section, .reveal-stagger-container, .pipeline-flow-container').forEach(el => {
+            el.classList.add('is-visible');
+        });
+        document.querySelectorAll('.bench-bar-fill').forEach(bar => {
+            const w = bar.getAttribute('data-width');
+            if (w) bar.style.width = w;
+        });
     }
 
-    // 1. ANCHOR & LINK CLICK INTERCEPTOR (INFINITELY REPEATABLE SCROLLING)
+    // 2. ABSOLUTE OFFSET SMOOTH SCROLL HANDLER (100% PRECISE TARGETING)
     document.addEventListener('click', (e) => {
         const anchor = e.target.closest('a');
         if (!anchor) return;
@@ -70,15 +41,10 @@
         const href = anchor.getAttribute('href');
         if (!href) return;
 
-        // Ensure all sections are revealed so scrolling never target hidden/unrendered layout
-        document.querySelectorAll('.reveal-section, .reveal-stagger-container, .pipeline-flow-container').forEach(el => {
-            el.classList.add('is-visible');
-        });
-
         // Top / Logo links
         if (href === '#' || href === '#hero' || href === 'index.html' || anchor.classList.contains('hero-brand')) {
             e.preventDefault();
-            animateScrollTo(0);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             return;
         }
 
@@ -87,8 +53,12 @@
             const target = document.querySelector(href);
             if (target) {
                 e.preventDefault();
-                const targetY = target.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop) - 10;
-                animateScrollTo(targetY);
+                revealAllSections(); // Ensure offsets are calculated on visible layout
+                const targetY = Math.max(0, target.offsetTop - 20);
+                window.scrollTo({
+                    top: targetY,
+                    behavior: 'smooth'
+                });
             }
         }
     });
@@ -326,17 +296,10 @@
     // SELECTIVE SCIENTIFIC SCROLL ANIMATIONS ENGINE
     function initScrollAnimations() {
         if (!('IntersectionObserver' in window)) {
-            document.querySelectorAll('.reveal-section, .reveal-stagger-container, .pipeline-flow-container').forEach(el => {
-                el.classList.add('is-visible');
-            });
-            document.querySelectorAll('.bench-bar-fill').forEach(bar => {
-                const w = bar.getAttribute('data-width');
-                if (w) bar.style.width = w;
-            });
+            revealAllSections();
             return;
         }
 
-        // SECTION & STAGGER REVEAL OBSERVER
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -350,7 +313,6 @@
             revealObserver.observe(el);
         });
 
-        // EMPIRICAL STATS COUNTER ANIMATION (RUNS ONCE OVER ~0.8s)
         const statsContainer = document.querySelector('.stats-container');
         if (statsContainer) {
             const statsObserver = new IntersectionObserver((entries) => {
@@ -397,7 +359,6 @@
             requestAnimationFrame(step);
         }
 
-        // BENCHMARK BAR FILL WIDTH ANIMATION
         const benchContainer = document.querySelector('.bench-visual-container');
         if (benchContainer) {
             const benchObserver = new IntersectionObserver((entries) => {
