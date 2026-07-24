@@ -22,11 +22,21 @@
         window.scrollTo(0, 0);
     });
 
-    // CUSTOM SMOOTH ANIMATION SCROLL ENGINE (FRAME-BY-FRAME 600MS EASY SLIDE)
+    // CUSTOM SMOOTH ANIMATION SCROLL ENGINE (INFINITE REPEATABLE SMOOTH SLIDE)
+    let currentScrollFrame = null;
+
     function animateScrollTo(targetY) {
-        const startY = window.pageYOffset;
+        // Cancel any previously running scroll animation to prevent collision
+        if (currentScrollFrame) {
+            cancelAnimationFrame(currentScrollFrame);
+            currentScrollFrame = null;
+        }
+
+        const startY = window.pageYOffset || document.documentElement.scrollTop;
         const distance = targetY - startY;
-        const duration = 650; // 650ms smooth slide
+        if (Math.abs(distance) < 5) return;
+
+        const duration = 500; // Crisp 500ms slide
         let start = null;
 
         function step(timestamp) {
@@ -40,25 +50,30 @@
             window.scrollTo(0, startY + distance * ease);
 
             if (progress < 1) {
-                requestAnimationFrame(step);
+                currentScrollFrame = requestAnimationFrame(step);
             } else {
-                // Ensure hash is cleaned from URL after smooth scroll finishes
+                currentScrollFrame = null;
                 if (window.location.hash) {
                     history.replaceState(null, '', window.location.pathname + window.location.search);
                 }
             }
         }
 
-        requestAnimationFrame(step);
+        currentScrollFrame = requestAnimationFrame(step);
     }
 
-    // 1. ANCHOR & LINK CLICK INTERCEPTOR
+    // 1. ANCHOR & LINK CLICK INTERCEPTOR (INFINITELY REPEATABLE SCROLLING)
     document.addEventListener('click', (e) => {
         const anchor = e.target.closest('a');
         if (!anchor) return;
 
         const href = anchor.getAttribute('href');
         if (!href) return;
+
+        // Ensure all sections are revealed so scrolling never target hidden/unrendered layout
+        document.querySelectorAll('.reveal-section, .reveal-stagger-container, .pipeline-flow-container').forEach(el => {
+            el.classList.add('is-visible');
+        });
 
         // Top / Logo links
         if (href === '#' || href === '#hero' || href === 'index.html' || anchor.classList.contains('hero-brand')) {
@@ -72,7 +87,7 @@
             const target = document.querySelector(href);
             if (target) {
                 e.preventDefault();
-                const targetY = target.getBoundingClientRect().top + window.pageYOffset - 10;
+                const targetY = target.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop) - 10;
                 animateScrollTo(targetY);
             }
         }
