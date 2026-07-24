@@ -4,21 +4,25 @@
 (function() {
     'use strict';
 
-    // 0. RESET SCROLL POSITION TO TOP ON REFRESH (PREVENT TRAPPED PAGE RELOAD AT BOTTOM)
+    // 0. RESET SCROLL RESTORATION & FORCE TOP SCROLL ON LOAD/REFRESH
     if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
     }
 
+    function resetToTop() {
+        if (window.location.hash) {
+            history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
+        window.scrollTo(0, 0);
+    }
+
+    resetToTop();
+    window.addEventListener('load', resetToTop);
     window.addEventListener('beforeunload', () => {
         window.scrollTo(0, 0);
     });
 
-    if (window.location.hash) {
-        history.replaceState(null, '', window.location.pathname);
-    }
-    window.scrollTo(0, 0);
-
-    // 1. ELEGANT SMOOTH SCROLL ANCHOR HANDLER (PREVENT INSTANT TELEPORTING)
+    // 1. SMOOTH SCROLL ANCHOR HANDLER (ZERO TELEPORTING, NO HASH IN URL)
     document.addEventListener('click', (e) => {
         const anchor = e.target.closest('a[href^="#"]');
         if (!anchor) return;
@@ -29,11 +33,11 @@
         const target = document.querySelector(href);
         if (target) {
             e.preventDefault();
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
+            const targetY = target.getBoundingClientRect().top + window.pageYOffset - 10;
+            window.scrollTo({
+                top: targetY,
+                behavior: 'smooth'
             });
-            history.pushState(null, '', href);
         }
     });
 
