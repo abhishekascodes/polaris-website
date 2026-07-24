@@ -35,8 +35,8 @@
                 <a href="#visual-math" class="hero-nav-link">VISUAL MATH</a>
                 <a href="#pipeline-flow" class="hero-nav-link">PIPELINE FLOW</a>
                 <a href="#benchmarks" class="hero-nav-link">BENCHMARKS</a>
-                <a href="#quickstart" class="hero-nav-link">QUICKSTART</a>
-                <a href="#quickstart" class="hero-nav-cta">GET STARTED</a>
+                <a href="#methodology" class="hero-nav-link">METHODOLOGY</a>
+                <a href="#methodology" class="hero-nav-cta">RESEARCH METHODOLOGY</a>
             </nav>
         </div>
 
@@ -264,22 +264,76 @@
         </div>
     </section>
 
-    <!-- QUICKSTART SECTION -->
-    <section id="quickstart" class="section reveal-section">
+    <!-- RESEARCH METHODOLOGY SECTION (OPTION 1: REPLACING CODE QUICKSTART) -->
+    <section id="methodology" class="section reveal-section">
         <div class="section-head">
-            <span class="section-tag">QUICKSTART</span>
-            <h2 class="section-title">Developer Integration</h2>
-            <p class="section-lead">Integrate POLARIS v5 into any multi-agent PyTorch environment in 3 lines of code.</p>
+            <span class="section-tag">RESEARCH METHODOLOGY</span>
+            <h2 class="section-title">How POLARIS Makes Safe Decisions</h2>
+            <p class="section-lead">Instead of unconstrained probabilistic execution, POLARIS processes actions through a deterministic 7-tier decision pipeline.</p>
         </div>
 
-        <div class="code-box">
-            <span class="comment"># 1. Install POLARIS v5 Governance Engine</span><br>
-            pip install polaris-governance<br><br>
-            <span class="comment"># 2. Instantiate 7-Phase Neuro-Symbolic Engine</span><br>
-            <span class="keyword">from</span> polaris <span class="keyword">import</span> PolarisV5Engine<br>
-            engine = <span class="func">PolarisV5Engine</span>(modules_dir=<span class="string">"./polaris_modules"</span>)<br><br>
-            <span class="comment"># 3. Execute Deterministic Safe Governance Step</span><br>
-            state, safe_actions, info = engine.<span class="func">step</span>(raw_llm_actions)
+        <div class="methodology-flow-box">
+            <div class="methodology-node">
+                <div class="node-badge">01</div>
+                <div class="node-content">
+                    <div class="node-title">Raw LLM Intent</div>
+                    <div class="node-sub">Probabilistic trajectory sampling from neural foundation model policy.</div>
+                </div>
+            </div>
+            <div class="methodology-connector"><svg class="arrow-svg" viewBox="0 0 24 24"><path d="M11 4v13.17l-4.59-4.58L5 14l7 7 7-7-1.41-1.41L13 17.17V4h-2z"/></svg></div>
+
+            <div class="methodology-node">
+                <div class="node-badge">02</div>
+                <div class="node-content">
+                    <div class="node-title">State Estimation</div>
+                    <div class="node-sub">High-frequency multi-agent position, velocity, and kinematics tensor extraction.</div>
+                </div>
+            </div>
+            <div class="methodology-connector"><svg class="arrow-svg" viewBox="0 0 24 24"><path d="M11 4v13.17l-4.59-4.58L5 14l7 7 7-7-1.41-1.41L13 17.17V4h-2z"/></svg></div>
+
+            <div class="methodology-node">
+                <div class="node-badge">03</div>
+                <div class="node-content">
+                    <div class="node-title">Neighbor Graph Construction</div>
+                    <div class="node-sub">Dynamic spatial proximity topology and persistent homology Betti-1 loop tracking (m259).</div>
+                </div>
+            </div>
+            <div class="methodology-connector"><svg class="arrow-svg" viewBox="0 0 24 24"><path d="M11 4v13.17l-4.59-4.58L5 14l7 7 7-7-1.41-1.41L13 17.17V4h-2z"/></svg></div>
+
+            <div class="methodology-node">
+                <div class="node-badge">04</div>
+                <div class="node-content">
+                    <div class="node-title">Control Barrier Analysis</div>
+                    <div class="node-sub">Lie derivative evaluation of continuous Control Barrier Functions h(x) >= 0 (m257).</div>
+                </div>
+            </div>
+            <div class="methodology-connector"><svg class="arrow-svg" viewBox="0 0 24 24"><path d="M11 4v13.17l-4.59-4.58L5 14l7 7 7-7-1.41-1.41L13 17.17V4h-2z"/></svg></div>
+
+            <div class="methodology-node">
+                <div class="node-badge">05</div>
+                <div class="node-content">
+                    <div class="node-title">QP Optimization</div>
+                    <div class="node-sub">Sub-millisecond convex OSQP minimal norm-distance projection ||u - u_nom||^2.</div>
+                </div>
+            </div>
+            <div class="methodology-connector"><svg class="arrow-svg" viewBox="0 0 24 24"><path d="M11 4v13.17l-4.59-4.58L5 14l7 7 7-7-1.41-1.41L13 17.17V4h-2z"/></svg></div>
+
+            <div class="methodology-node">
+                <div class="node-badge">06</div>
+                <div class="node-content">
+                    <div class="node-title">Safe Action Projection</div>
+                    <div class="node-sub">Forward-invariant safe control vector synthesis with guaranteed physical bounds.</div>
+                </div>
+            </div>
+            <div class="methodology-connector"><svg class="arrow-svg" viewBox="0 0 24 24"><path d="M11 4v13.17l-4.59-4.58L5 14l7 7 7-7-1.41-1.41L13 17.17V4h-2z"/></svg></div>
+
+            <div class="methodology-node highlight">
+                <div class="node-badge">07</div>
+                <div class="node-content">
+                    <div class="node-title">Execution</div>
+                    <div class="node-sub">Physical actuator dispatch with zero spatial boundary violations.</div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -306,7 +360,7 @@
             </div>
             <div>
                 <div style="font-weight: 700; color: #ffffff; margin-bottom: 12px; font-family: var(--font-mono);">DOCUMENTATION & CODE</div>
-                <p><a href="#quickstart" style="color: var(--accent-lime); text-decoration: none;">Quickstart Guide</a></p>
+                <p><a href="#methodology" style="color: var(--accent-lime); text-decoration: none;">Research Methodology</a></p>
                 <p><a href="https://polaris.abhishekas.in" style="color: #cce5e1; text-decoration: none;">polaris.abhishekas.in</a></p>
             </div>
         </div>
